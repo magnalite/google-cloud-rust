@@ -102,7 +102,7 @@ mod test {
         job1.job_reference.project_id = project.to_string();
         job1.job_reference.location = Some("US".to_string());
         job1.configuration = JobConfiguration {
-            job: JobType::Query(JobConfigurationQuery {
+            job: Some(JobType::Query(JobConfigurationQuery {
                 use_legacy_sql: Some(false),
                 query: format!(
                     "
@@ -119,7 +119,7 @@ mod test {
                     model_id
                 ),
                 ..Default::default()
-            }),
+            })),
             ..Default::default()
         };
         let mut job = job_client.create(&job1).await.unwrap();

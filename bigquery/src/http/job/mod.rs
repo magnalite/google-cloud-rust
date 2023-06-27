@@ -440,7 +440,7 @@ pub struct JobConfiguration {
     pub job_type: String,
     /// [Pick one] Configures a job.
     #[serde(flatten)]
-    pub job: JobType,
+    pub job: Option<JobType>,
     /// Optional. If set, don't actually run this job.
     /// A valid query will return a mostly empty response with some processing statistics,
     /// while an invalid query will return the same error it would if it wasn't a dry run.
@@ -456,6 +456,7 @@ pub struct JobConfiguration {
     /// Label keys and values can be no longer than 63 characters, can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter and each label in the list must have a different key.
     /// An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
     pub labels: Option<HashMap<String, String>>,
+    pub query: Option<JobConfigurationQuery>,
 }
 
 #[derive(Clone, PartialEq, serde::Deserialize, serde::Serialize, Debug, Default)]

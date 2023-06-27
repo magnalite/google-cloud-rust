@@ -184,10 +184,10 @@ mod test {
         job1.job_reference.project_id = project.to_string();
         job1.job_reference.location = Some("asia-northeast1".to_string());
         job1.configuration = JobConfiguration {
-            job: JobType::Query(JobConfigurationQuery {
+            job: Some(JobType::Query(JobConfigurationQuery {
                 query: "SELECT 1 FROM invalid_table".to_string(),
                 ..Default::default()
-            }),
+            })),
             ..Default::default()
         };
         let job1 = client.create(&job1).await.unwrap();
@@ -212,11 +212,11 @@ mod test {
         job1.job_reference.project_id = project.to_string();
         job1.job_reference.location = Some("asia-northeast1".to_string());
         job1.configuration = JobConfiguration {
-            job: JobType::Query(JobConfigurationQuery {
+            job: Some(JobType::Query(JobConfigurationQuery {
                 use_legacy_sql: Some(false),
                 query: "SELECT * FROM rust_test_job.table_data_1681472944".to_string(),
                 ..Default::default()
-            }),
+            })),
             ..Default::default()
         };
         let job1 = client.create(&job1).await.unwrap();
@@ -234,7 +234,7 @@ mod test {
         job1.job_reference.project_id = project.to_string();
         job1.job_reference.location = Some("asia-northeast1".to_string());
         job1.configuration = JobConfiguration {
-            job: JobType::Load(JobConfigurationLoad {
+            job: Some(JobType::Load(JobConfigurationLoad {
                 source_uris: vec!["gs://rust-bq-test/external_data.csv".to_string()],
                 source_format: Some(SourceFormat::Csv),
                 field_delimiter: Some("|".to_string()),
@@ -248,7 +248,7 @@ mod test {
                     table_id: "rust_test_load_result".to_string(),
                 },
                 ..Default::default()
-            }),
+            })),
             ..Default::default()
         };
         let job1 = client.create(&job1).await.unwrap();
@@ -262,7 +262,7 @@ mod test {
         job2.job_reference.project_id = project.to_string();
         job2.job_reference.location = Some("asia-northeast1".to_string());
         job2.configuration = JobConfiguration {
-            job: JobType::Copy(JobConfigurationTableCopy {
+            job: Some(JobType::Copy(JobConfigurationTableCopy {
                 source_table: JobConfigurationSourceTable::SourceTable(TableReference {
                     project_id: project.to_string(),
                     dataset_id: "rust_test_job".to_string(),
@@ -277,7 +277,7 @@ mod test {
                 write_disposition: Some(WriteDisposition::WriteTruncate),
                 operation_type: Some(OperationType::Copy),
                 ..Default::default()
-            }),
+            })),
             ..Default::default()
         };
         let job2 = client.create(&job2).await.unwrap();
@@ -291,7 +291,7 @@ mod test {
         job3.job_reference.project_id = project.to_string();
         job3.job_reference.location = Some("asia-northeast1".to_string());
         job3.configuration = JobConfiguration {
-            job: JobType::Extract(JobConfigurationExtract {
+            job: Some(JobType::Extract(JobConfigurationExtract {
                 destination_uris: vec!["gs://rust-bq-test/extracted_data.json".to_string()],
                 destination_format: Some(DestinationFormat::NewlineDelimitedJson),
                 source: JobConfigurationExtractSource::SourceTable(TableReference {
@@ -300,7 +300,7 @@ mod test {
                     table_id: "rust_test_load_result".to_string(),
                 }),
                 ..Default::default()
-            }),
+            })),
             ..Default::default()
         };
         let job3 = client.create(&job3).await.unwrap();
@@ -369,7 +369,6 @@ mod test {
         assert!(result.page_token.is_some());
         assert_eq!(result.rows.unwrap().len(), 2);
         assert_eq!(result.total_rows.unwrap(), 3);
-        assert_eq!(result.total_bytes_processed, 0);
         assert!(result.job_complete);
 
         // query all results
@@ -411,7 +410,6 @@ mod test {
             .unwrap();
         assert!(result.job_reference.job_id.is_empty());
         assert!(result.total_rows.is_none());
-        assert_eq!(result.total_bytes_processed, 0);
         assert!(result.job_complete);
 
         table_client

@@ -59,6 +59,7 @@ impl BigqueryClient {
         let response = Self::check_response_status(response).await?;
         if self.debug {
             let text = response.text().await?;
+            println!("response: {}", text);
             tracing::info!("{}", text);
             Ok(serde_json::from_str(text.as_str()).unwrap())
         } else {
